@@ -1496,11 +1496,11 @@
                         </div>
                     `).join('');
                 } else {
-                    resultsDiv.innerHTML = `<div class="error">❌ ${message}</div>`;
+                    resultsDiv.innerHTML = `<div class="error"> ${message}</div>`;
                 }
             } catch (error) {
                 console.error("Generation failed", error);
-                resultsDiv.innerHTML = `<div class="error">❌ Server error, please try again</div>`;
+                resultsDiv.innerHTML = `<div class="error">Server error, please try again</div>`;
             }
         }
 async function customGenerateOutfits() {
@@ -1556,11 +1556,11 @@ async function customGenerateOutfits() {
                 </div>
             `).join('');
         } else {
-            resultsDiv.innerHTML = `<div class="error">❌ ${message}</div>`;
+            resultsDiv.innerHTML = `<div class="error"> ${message}</div>`;
         }
     } catch (error) {
         console.error("Custom Generation failed", error);
-        resultsDiv.innerHTML = `<div class="error">❌ Server error, please try again</div>`;
+        resultsDiv.innerHTML = `<div class="error">Server error, please try again</div>`;
     }
 }
 
