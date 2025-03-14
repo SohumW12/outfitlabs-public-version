@@ -1,3 +1,4 @@
+//file by sohum wadhwani
 const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
@@ -172,7 +173,7 @@ async function getWeather(user, date) {
             isDaytime: periods.some(p => p.isDaytime)
         };
     } catch (error) {
-        console.error("❌ Weather Error:", error.message);
+        console.error(" error w weather:", error.message);
         return null;
     }
 }
@@ -335,16 +336,6 @@ app.post("/generate", async (req, res) => {
                 `${c.name} (${c.subCategory}, ${c.size || 'one size'}, ${c.color || 'unspecified color'})`
             ).join(", ");
 
-            let weatherGuidance = "";
-            if (isRainy) {
-                weatherGuidance = "Include waterproof or water-resistant items. Prioritize items that keep the person dry.";
-            } else if (isSnowy) {
-                weatherGuidance = "Prioritize warm, insulated items and waterproof footwear.";
-            } else if (isCold) {
-                weatherGuidance = "Focus on layering and warmth. Include appropriate outerwear.";
-            } else if (isHot) {
-                weatherGuidance = "Select lightweight, breathable clothing suitable for hot weather.";
-            }
             
             return `Create a complete outfit for ${weather.date} with weather: ${weather.condition} (${weather.minTemp}°F-${weather.maxTemp}°F).
 
@@ -430,11 +421,11 @@ NO BOLD SO DONT GIVE ME THE ** BS I DONT WANNA SEE IT
                     raw: response
                 };
             } catch (error) {
-                console.error("❌ Response Parsing Error:", response);
+                console.error("parse error:", response);
                 return {
                     date: weatherData[index].date,
                     weather: weatherData[index],
-                    name: "Failed to generate outfit",
+                    name: "generation failed",
                     items: [],
                     stylingTips: "",
                     error: true
@@ -444,13 +435,13 @@ NO BOLD SO DONT GIVE ME THE ** BS I DONT WANNA SEE IT
 
         res.json({ success: true, outfits });
     } catch (error) {
-        console.error("❌ Generation Error:", error);
-        res.status(500).json({ success: false, message: "Server error" });
+        console.error("error w generation:", error);
+        res.status(500).json({ success: false, message: "serverside error" });
     }
 });
 app.post("/custom-generate", async (req, res) => {
     try {
-        if (!req.user) return res.json({ success: false, message: "Login required" });
+        if (!req.user) return res.json({ success: false, message: "unauthorized" });
 
         const { preferences, weather, temperature } = req.body;
         if (!preferences && !weather && !temperature) {
@@ -600,14 +591,14 @@ app.post("/save-to-calendar", async (req, res) => {
         
         res.json({ success: true });
     } catch (error) {
-        console.error("❌ Save Error:", error);
+        console.error("error saving outfit:", error);
         res.status(500).json({ success: false, message: "Failed to save outfit" });
     }
 });
 
 app.get("/calendar-outfits/:year/:month", async (req, res) => {
     try {
-        if (!req.user) return res.status(401).json({ success: false, message: "Login required" });
+        if (!req.user) return res.status(401).json({ success: false, message: "Authorization required" });
         
         const { year, month } = req.params;
         const startDate = new Date(parseInt(year), parseInt(month) - 1, 1);
@@ -620,24 +611,24 @@ app.get("/calendar-outfits/:year/:month", async (req, res) => {
         
         res.json({ success: true, outfits });
     } catch (error) {
-        console.error("❌ Calendar Error:", error);
+        console.error("error loading calander:", error);
         res.status(500).json({ success: false, message: "Failed to fetch calendar" });
     }
 });
 
 app.delete("/calendar-outfit/:id", async (req, res) => {
     try {
-        if (!req.user) return res.status(401).json({ success: false, message: "Login required" });
+        if (!req.user) return res.status(401).json({ success: false, message: "login required" });
         
         const outfit = await SavedOutfit.findById(req.params.id);
         if (!outfit || outfit.userId !== req.user.id) {
-            return res.status(404).json({ success: false, message: "Outfit not found" });
+            return res.status(404).json({ success: false, message: "outfit not found" });
         }
         
         await SavedOutfit.findByIdAndDelete(req.params.id);
         res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to delete outfit" });
+        res.status(500).json({ success: false, message: "failed to delete outfit" });
     }
 });
 
