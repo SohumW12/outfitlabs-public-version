@@ -1,14 +1,16 @@
-<!-- frontend by vaivas -->
+<!-- Frontend by vaivas -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- webpage metadata + reference libraries/protocols/presets -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OutFitLabs - Never Worry About Your Outfit Again</title>
+    <title>OutfitLabs - Never Worry About Your Outfit Again</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.0/main.min.css">
     
     <style>
+
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -25,6 +27,8 @@
             --radius: 0.5rem;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
+	
+	
 
         * {
             margin: 0;
@@ -33,11 +37,14 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
+
         body {
             background-color: var(--background);
             color: var(--text);
             line-height: 1.5;
         }
+	
+
 
         header {
             background-color: var(--card-bg);
@@ -50,6 +57,8 @@
             top: 0;
             z-index: 10;
         }
+	
+	
 
         h1 {
             font-size: 1.5rem;
@@ -57,17 +66,20 @@
             color: var(--primary);
         }
 
+
         main {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
         }
 
+
         .user-bar {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
 
         .login-btn {
             background-color: var(--primary);
@@ -738,33 +750,38 @@
 </head>
 <body>
     <header>
-        <h1>👗 OutfitLabs</h1>
+        <h1>👗 OutfitLabs</h1> <!-- logo + name heading -->
         <% if (user) { %>
             <div class="user-bar">
                 <p>Welcome, <%= user.displayName %> | <a href="/logout">Logout</a></p>
             </div>
+	    <!-- if logged in, display "Welcome, <display name>!" -->
         <% } else { %>
             <div class="logged-out">
                 <a class="login-btn" href="/auth/google">Login with Google</a>
             </div>
+	    <!-- if not logged in, display a button to log in -->
         <% } %>
     </header>
 
-    <main>
+    <main> <!main-content>
         <% if (!user) { %>
             <div class="qwerty123_container">
-                  <center>  <h1 class="zxcvbn789_title">Upgrade Your Lame Fits with AI</h1></center>
+                  <center>  <h1 class="zxcvbn789_title">Upgrade Your Lame Fits with AI</h1></center> 
+		 <!-- tagline -->
                     <p class="poiuyt321_subtitle">
                         Get personalized AI outfits from your closet based on the weather or occasion.
                     </p>
+		   <!-- subtitle -->
                     
                 <center>   <a href="/auth/google" class="lkjhgf654_button">
                         Signup
-                    </a></center>
+                    </a></center> <!-- signup button -->
                 
                     <br>
                     <br>
                     <br>
+	  	<!-- user reviews/testimonials -->
                 <div class="mnbvcx987_testimonials">
                     <div class="ytrewq543_testimonial">
                         <div class="hgfdsa321_image_container">
@@ -806,14 +823,14 @@
                         </div>
                     </div>
                 </div>
-                
+                <!-- pricing details -->
                 <div class="ghijkl789_pricing">
                     <div class="mnopqr123_pricing_header">
-                        <h2 class="stuvwx456_pricing_title">Simple Pricing</h2>
-                        <div class="yzabcd789_price">$0 (For Now)</div>
+                        <h2 class="stuvwx456_pricing_title">Simple Pricing</h2> <!-- plan name -->
+                        <div class="yzabcd789_price">$0 (For Now)</div> <!-- plan cost -->
                     </div>
                     <div class="klmnop456_pricing_body">
-                        <ul class="qrstuv789_features">
+                        <ul class="qrstuv789_features"> <!-- plan features -->
                             <li class="wxyzab123_feature">
                                 <span class="cdefgh456_check">✓</span>
                                 <span class="ijklmn789_feature_text">Unlimited outfit recommendations</span>
@@ -829,7 +846,7 @@
                         </ul>
                         <a href="/auth/google" class="lkjhgf654_button" style="display: block; text-align: center;">
                             Get Started Now
-                        </a>
+                        </a> <!-- button to redirect to google authentication -->
                     </div>
                 </div>
             </div>
@@ -837,28 +854,31 @@
         
             <% } %>
             <% if (user) { %>
-            <div class="tab-container">
+            <div class="tab-container"> <!-- tab array to toggle between closet, outfit generation, and calendar -->
                 <button class="tab <%= activeTab === 'closet' ? 'active' : '' %>" 
                         onclick="switchTab('closet')">
                     👕 Closet
                 </button>
+		<!-- tab containing user-uploaded clothing entities -->
                 <button class="tab <%= activeTab === 'generator' ? 'active' : '' %>" 
                         onclick="switchTab('generator')">
                     ✨ Generate Outfits
                 </button>
+		<!-- tab containing the main menu (generating outfits) -->
                 <button class="tab <%= activeTab === 'calendar' ? 'active' : '' %>" 
                         onclick="switchTab('calendar')">
                     📅 Outfit Calendar
                 </button>
+		<!-- tab containing calendar, where user can see scheduled occasions with appropriate AI generated attire (a new occasion is scheduled and added to the calendar after making a query with the AI) -->
             </div>
 
             <div id="closet" class="tab-content <%= activeTab === 'closet' ? 'active' : '' %>">
 
-                <section>
+                <section> <!-- closet interface -->
                     <div class="section-header">
                         <h2>👕 Your Closet</h2>
                     </div>
-                    <div class="closet">
+                    <div class="closet"> <!-- contains user-uploaded clothes, displays each -->
                         <% clothes.forEach(c => { %>
                             <div class="clothing-item">
                                 <img src="<%= c.image %>" alt="<%= c.name %>">
@@ -872,7 +892,7 @@
                     </div>
                 </section>
 
-                <div class="add-item-btn" onclick="showAddItemPopup()">+</div>
+                <div class="add-item-btn" onclick="showAddItemPopup()">+</div> <!-- option to add new clothes to the closet -->
             </div>
 
             <div id="generator" class="tab-content <%= activeTab === 'generator' ? 'active' : '' %>">
@@ -935,32 +955,32 @@
                     }
                 </style>
                 
-                <section>
-                    <h2>✨ Generate Outfits</h2>
+                <section> <!-- main interface -->
+                    <h2>✨ Generate Outfits</h2> 
                 
-                    <div class="toggle-container">
-                        <button class="toggle-btn active" id="toggle-date" onclick="toggleGeneration('date')">📅 Date-Based</button>
-                        <button class="toggle-btn" id="toggle-custom" onclick="toggleGeneration('custom')">🎭 Custom</button>
+                    <div class="toggle-container"> <!-- user chooses here to make a date-based or custom query-->
+                        <button class="toggle-btn active" id="toggle-date" onclick="toggleGeneration('date')">📅 Date-Based</button> <!-- select date-based query -->
+                        <button class="toggle-btn" id="toggle-custom" onclick="toggleGeneration('custom')">🎭 Custom</button> <!-- select custom query -->
                     </div>
                 
-                    <div class="generation-section active" id="date-generation">
+                    <div class="generation-section active" id="date-generation"> <!-- main input from the user (for date-based queries) -->
                         <div class="date-selector">
-                            <input type="text" id="datePicker" placeholder="📅 Select dates for outfit generation">
-                            <textarea id="customNotes" placeholder="📝 Add any special instructions, preferred styles, or weather considerations..."></textarea>
+                            <input type="text" id="datePicker" placeholder="📅 Select dates for outfit generation"> <!-- user inputs the date of occasion -->
+                            <textarea id="customNotes" placeholder="📝 Add any special instructions, preferred styles, or weather considerations..."></textarea> <!-- option to add special instructions -->
                             <button class="generate-btn" onclick="generateOutfits()">
                                 🎨 Generate Outfits
-                            </button>
+                            </button> <!-- button to execute the AI algorithm -->
                         </div>
                     </div>
                 
-                    <div class="generation-section" id="custom-generation">
+                    <div class="generation-section" id="custom-generation"> <!-- main input from the user (for custom queries) -->
                         <h2>🎭 Custom Outfit Generation</h2>
                         <p class="info-text">💡 This mode ignores the date and generates outfits based on your exact weather input.</p>
                 
                         <div class="custom-generation">
-                            <textarea id="customPreferences" placeholder="Describe the type of outfit you want, e.g., 'Business casual for an interview' or 'Comfy outfit for lounging'"></textarea>
+                            <textarea id="customPreferences" placeholder="Describe the type of outfit you want, e.g., 'Business casual for an interview' or 'Comfy outfit for lounging'"></textarea> <!-- user input for broad categorical information regarding the attire, with additional information pertinent to the occasion -->
                 
-                            <select id="customWeather">
+                            <select id="customWeather"> <!-- manual input for weather (as this is a custom query) -->
                                 <option value="">🌦️ Select Weather Condition</option>
                                 <option value="sunny">☀️ Sunny</option>
                                 <option value="rainy">🌧️ Rainy</option>
@@ -971,15 +991,15 @@
                                 <option value="cold">🥶 Cold</option>
                             </select>
                 
-                            <input type="number" id="customTemp" placeholder="🌡️ Enter exact temperature (°F or °C)">
+                            <input type="number" id="customTemp" placeholder="🌡️ Enter exact temperature (must be in °F)"> <!-- manual input for temperature (as this is a custom query) -->
                 
                             <button class="generate-btn" onclick="customGenerateOutfits()">
                                 🎭 Generate Custom Outfit
-                            </button>
+                            </button> <!-- button to execute the AI algorithm -->
                         </div>
                     </div>
                 
-                    <div id="outfitResults"></div>
+                    <div id="outfitResults"></div> <!-- AI output -->
                 </section>
                 
                 <script>
@@ -1006,16 +1026,16 @@
                                             </div>
 
             <div id="calendar" class="tab-content <%= activeTab === 'calendar' ? 'active' : '' %>">
-                <section>
-                    <h2>📅 Your Outfit Calendar</h2>
+                <section> <!-- calendar interface -->
+                    <h2>📅 Your Outfit Calendar</h2> 
                     <p>View and manage your saved outfits by date. Click on a date to see details.</p>
-                    <div id="calendarContainer" class="calendar-container"></div>
+                    <div id="calendarContainer" class="calendar-container"></div> <!-- calendar -->
                 </section>
             </div>
 
-            <div id="outfitPopup" style="display: none;"></div>
+            <div id="outfitPopup" style="display: none;"></div> <!-- popup of the outfit -->
 
-            <div id="addItemPopup" style="display: none;">
+            <div id="addItemPopup" style="display: none;"> <!-- dialog to add outfit -->
                 <div class="popup-backdrop" onclick="closeAddItemPopup()"></div>
                 <div class="calendar-outfit-popup">
                     <button class="close-popup" onclick="closeAddItemPopup()">×</button>
@@ -1024,7 +1044,7 @@
                         <div class="form-group">
                             <label for="mainCategory">Category:</label>
                             <select id="mainCategory" name="mainCategory" required onchange="updateSubcategories()">
-                                <option value="">Select Category</option>
+                                <option value="">Select Category</option> <!-- item category -->
                                 <option value="tops">Tops</option>
                                 <option value="bottoms">Bottoms</option>
                                 <option value="outerwear">Outerwear</option>
@@ -1034,30 +1054,30 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="subCategory">Type:</label>
+                            <label for="subCategory">Type:</label> <!-- item type/subcategory -->
                             <select id="subCategory" name="subCategory" required>
                                 <option value="">Select Type</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="name">Item Name:</label>
+                            <label for="name">Item Name:</label> <!-- item name -->
                             <input type="text" id="name" name="name" placeholder="Item Name (e.g., Blue Polo)" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="size">Size:</label>
+                            <label for="size">Size:</label> <!-- item size -->
                             <input type="text" id="size" name="size" placeholder="Size (S, M, L, XL, etc.)" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="color">Color:</label>
+                            <label for="color">Color:</label> <!-- item color -->
                             <input type="text" id="color" name="color" placeholder="Color (e.g., blue, red, etc.)">
                             <div class="color-preview" id="colorPreview"></div>
                         </div>
 
                         <div class="form-group">
-                            <label for="fit">Fit/Style:</label>
+                            <label for="fit">Fit/Style:</label> <!-- item fit/style -->
                             <select id="fit" name="fit">
                                 <option value="">Select Fit/Style</option>
                                 <!-- Will be populated by JavaScript -->
@@ -1065,7 +1085,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="style">Occasion:</label>
+                            <label for="style">Occasion:</label> <!-- typical occasion to wear item -->
                             <select id="style" name="style">
                                 <option value="">Select Occasion</option>
                             </select>
@@ -1074,7 +1094,7 @@
                         <div class="form-group full-width">
                             <label>Seasons:</label>
                             <div class="checkbox-group">
-                                <div class="checkbox-item">
+                                <div class="checkbox-item"> <!-- seasons appropriate for item to be worn -->
                                     <input type="checkbox" id="spring" name="season" value="spring" checked>
                                     <label for="spring">Spring</label>
                                 </div>
@@ -1094,7 +1114,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="image">Image:</label>
+                            <label for="image">Image:</label> <-- image upload of the clothing item -->
                             <div class="upload-preview" id="imagePreview">
                                 <span>Image Preview</span>
                             </div>
@@ -1102,7 +1122,7 @@
                         </div>
 
                         <div class="form-group full-width">
-                            <button type="submit">⬆️ Add to Closet</button>
+                            <button type="submit">⬆️ Add to Closet</button> <!-- adds item to closet, after all previous values have been inputted -->
                         </div>
                     </form>
                 </div>
@@ -1122,7 +1142,7 @@
 
         let calendar;
 
-        const clothingOptions = {
+        const clothingOptions = { //comprehensive list of every clothing option, each with its own comprehensive list of subcategories
             tops: {
                 subCategories: ['t-shirt', 'polo', 'dress shirt', 'button-up', 'blouse', 'tank top', 'quarterzip', 'sweater', 'long sleeve', 'short sleeve', 'sports shirt', 'henley', 'turtleneck'],
                 fits: ['slim', 'regular', 'loose', 'oversized', 'fitted', 'athletic', 'classic'],
@@ -1150,7 +1170,7 @@
             }
         };
 
-        function updateSubcategories() {
+        function updateSubcategories() { //updates subcategory values based on 
             const mainCategory = document.getElementById('mainCategory').value;
             const subCategorySelect = document.getElementById('subCategory');
             const fitSelect = document.getElementById('fit');
@@ -1186,7 +1206,7 @@
             }
         }
 
-        function previewImage(event) {
+        function previewImage(event) { //preview image of a clothing item
             const preview = document.getElementById('imagePreview');
             const file = event.target.files[0];
             
@@ -1210,7 +1230,7 @@
             }
         });
 
-        function switchTab(tabId) {
+        function switchTab(tabId) { //switch the tab from generation / calendar / closet
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -1228,15 +1248,15 @@
             window.history.pushState(null, '', tabId === 'generator' ? '/' : '/' + tabId);
         }
 
-        function showAddItemPopup() {
+        function showAddItemPopup() { //show popup
             document.getElementById('addItemPopup').style.display = 'block';
         }
 
-        function closeAddItemPopup() {
+        function closeAddItemPopup() { //closes popup
             document.getElementById('addItemPopup').style.display = 'none';
         }
 
-        function initCalendar() {
+        function initCalendar() { //initializes calendar
             const calendarEl = document.getElementById('calendarContainer');
             
             calendar = new FullCalendar.Calendar(calendarEl, {
@@ -1267,14 +1287,14 @@
             loadCalendarData();
         }
 
-        async function loadCalendarData() {
+        async function loadCalendarData() { //loads calendar data
     if (!calendar) return;
     
     const date = calendar.getDate();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     
-    try {
+    try { //attempt to load calendar data
         const response = await fetch(`/calendar-outfits/${year}/${month}`);
         const data = await response.json();
         
@@ -1300,11 +1320,11 @@
                 });
             });
         }
-    } catch (error) {
+    } catch (error) { //if attempt unsuccessful, print an error message in the console
         console.error("Failed to load calendar data", error);
     }
 }
-        function getOutfitColor(weather) {
+        function getOutfitColor(weather) { //return outfit color based on the weather condition
             if (!weather) return '#4285f4';
             
             const condition = weather.condition.toLowerCase();
@@ -1316,14 +1336,14 @@
             } else if (condition.includes('sunny') || condition.includes('clear')) {
                 return '#f4b400'; // yelow
             } else if (condition.includes('cloud')) {
-                return '#0f9d58'; // gree n
+                return '#0f9d58'; // green
             } else {
                 return '#4285f4'; // blue
             }
         }
 
-        async function showOutfitDetails(outfitId) {
-            try {
+        async function showOutfitDetails(outfitId) { //display outfit details based on outfit ID
+            try { 
                 const event = calendar.getEventById(outfitId);
                 if (!event) return;
                 
@@ -1375,20 +1395,20 @@
                 document.getElementById('outfitPopup').innerHTML = popupHtml;
                 document.getElementById('outfitPopup').style.display = 'block';
                 
-            } catch (error) {
+            } catch (error) { //if attempt to display outfit details failed, print error to console
                 console.error("Failed to show outfit details", error);
             }
         }
 
-        function closePopup() {
+        function closePopup() { //close popup
             document.getElementById('outfitPopup').style.display = 'none';
             document.getElementById('outfitPopup').innerHTML = '';
         }
 
-        async function deleteOutfit(outfitId) {
+        async function deleteOutfit(outfitId) { //delete outfit (based on ID) upon additional user confirmation
             if (!confirm("Are you sure you want to delete this outfit?")) return;
             
-            try {
+            try { 
                 const response = await fetch(`/calendar-outfit/${outfitId}`, {
                     method: 'DELETE'
                 });
@@ -1400,13 +1420,13 @@
                 } else {
                     alert("Failed to delete outfit");
                 }
-            } catch (error) {
+            } catch (error) { //if there is a failure somewhere in deletion, print error to console
                 console.error("Delete failed", error);
                 alert("Failed to delete outfit");
             }
         }
 
-        async function saveToCalendar(date, outfitName, items, weather, stylingTips) {
+        async function saveToCalendar(date, outfitName, items, weather, stylingTips) { //save AI output data to calendar
             try {
                 const response = await fetch('/save-to-calendar', {
                     method: 'POST',
@@ -1433,10 +1453,10 @@
             }
         }
 
-        async function customGenerateOutfits(){
+        async function customGenerateOutfits(){ 
 
         }
-        async function generateOutfits() {
+        async function generateOutfits() { //generate outfits (date-based query)
     const dates = picker.selectedDates.map(d => d.toISOString().split('T')[0]);
     if (!dates.length) return alert("Please select dates first");
 
@@ -1453,7 +1473,7 @@
         });                
                 const { success, outfits, message } = await response.json();
                 
-                if (success) {
+                if (success) { //if success, display output
                     resultsDiv.innerHTML = outfits.map(outfit => `
                         <div class="outfit-card ${outfit.error ? 'error-card' : ''}">
                             <div class="outfit-title">
@@ -1496,15 +1516,15 @@
                             ` : ''}
                         </div>
                     `).join('');
-                } else {
+                } else { //if unsuccessful, display error message
                     resultsDiv.innerHTML = `<div class="error"> ${message}</div>`;
                 }
-            } catch (error) {
+            } catch (error) { //if exception captured, print error to console
                 console.error("Generation failed", error);
                 resultsDiv.innerHTML = `<div class="error">Server error, please try again</div>`;
             }
         }
-async function customGenerateOutfits() {
+async function customGenerateOutfits() { //generate outfits (custom query)
     const preferences = document.getElementById("customPreferences").value.trim();
     const weather = document.getElementById("customWeather").value;
     const temperature = document.getElementById("customTemp").value.trim();
@@ -1525,7 +1545,7 @@ async function customGenerateOutfits() {
 
         const { success, outfits, message } = await response.json();
 
-        if (success) {
+        if (success) { //if successful, display output
             resultsDiv.innerHTML = outfits.map(outfit => `
                 <div class="outfit-card ${outfit.error ? 'error-card' : ''}">
                     <h3>🎭 ${outfit.name}</h3>
@@ -1556,16 +1576,16 @@ async function customGenerateOutfits() {
                     ` : ''}
                 </div>
             `).join('');
-        } else {
+        } else { //if unsuccessful, display error message
             resultsDiv.innerHTML = `<div class="error"> ${message}</div>`;
         }
-    } catch (error) {
+    } catch (error) { //if exception encountered, print error to console
         console.error("Custom Generation failed", error);
         resultsDiv.innerHTML = `<div class="error">Server error, please try again</div>`;
     }
 }
 
-        function getLocation() {
+        function getLocation() { //obtain user location, ensures user enables location services as it is necessary for the app to work
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     await fetch("/update-location", {
@@ -1589,7 +1609,7 @@ async function customGenerateOutfits() {
             }
         });
         document.addEventListener('DOMContentLoaded', async function() {
-    async function checkAndRequestLocation() {
+    async function checkAndRequestLocation() { //request location from the user
         try {
             const response = await fetch("/user-location");
             const { latitude, longitude } = await response.json();
@@ -1610,7 +1630,7 @@ async function customGenerateOutfits() {
                         console.error("Geolocation error:", error);
                         alert("Location access is required for accurate outfit recommendations so we can adjust with the weather.");
                     });
-                } else {
+                } else { 
                     alert("geolocation doesn't work so the app doesn't work.");
                 }
             }
