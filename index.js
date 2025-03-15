@@ -13,15 +13,15 @@ require("dotenv").config();
 const { getDeepSeekResponse } = require("./deepseek");
 
 const app = express();
-
+//mongodb stuff
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
 .then(() => console.log("✅ Connected to MongoDB"))
-
+//cookies
 app.use(session({
-    secret: "supersecretkey",
+    secret: "tokentotallysecretnoonewillguess",
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
@@ -29,7 +29,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+//clothing schema main one when they create
 const Clothing = mongoose.model("Clothing", new mongoose.Schema({
     userId: String,
     name: String,
@@ -57,7 +57,7 @@ const User = mongoose.model("User", new mongoose.Schema({
     longitude: Number,
     timezone: String
 }));
-
+//outfgit to save to calendar
 const SavedOutfit = mongoose.model("SavedOutfit", new mongoose.Schema({
     userId: String,
     date: { type: Date, required: true },
@@ -66,7 +66,7 @@ const SavedOutfit = mongoose.model("SavedOutfit", new mongoose.Schema({
     weather: Object,
     stylingTips: String
 }));
-
+//google login
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -75,6 +75,7 @@ passport.use(new GoogleStrategy({
     try {
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
+            //using userid is a little easier than email
             user = await new User({
                 googleId: profile.id,
                 displayName: profile.displayName
@@ -100,13 +101,13 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+//upload pictures to store (stores on render's disk, pretty inefficient but ive used multer before so easier)
 const storage = multer.diskStorage({
     destination: "public/uploads/",
     filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
 });
 const upload = multer({ storage });
-
+//select options
 const clothingOptions = {
     tops: {
         subCategories: ['t-shirt', 'polo', 'dress shirt', 'button-up', 'blouse', 'tank top', 'quarterzip', 'sweater', 'long sleeve', 'short sleeve', 'sports shirt', 'henley', 'turtleneck'],
@@ -134,6 +135,7 @@ const clothingOptions = {
         styles: ['casual', 'formal', 'athletic', 'seasonal', 'statement', 'minimalist']
     }
 };
+//user location required for weather api 
 app.get("/user-location", async (req, res) => {
     if (!req.user) return res.json({ error: "User not logged in" });
 
@@ -142,7 +144,7 @@ app.get("/user-location", async (req, res) => {
 
     res.json({ latitude: user.latitude, longitude: user.longitude });
 });
-
+//get users weather clpothes will be based on this
 async function getWeather(user, date) {
     try {
         const timezone = user.timezone || 'America/New_York';
@@ -240,7 +242,7 @@ app.get("/auth/google/callback", passport.authenticate("google", {
 app.get("/logout", (req, res) => {
     req.logout(() => res.redirect("/"));
 });
-
+//allow them to update location zip doesnt matter anymore i took it out
 app.post("/update-location", async (req, res) => {
     if (!req.user) return res.status(401).send("Unauthorized");
 
@@ -285,7 +287,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
         res.status(500).send("Upload failed");
     }
 });
-
+//main generation
 app.post("/generate", async (req, res) => {
     try {
         if (!req.user) return res.json({ success: false, message: "Login required" });
@@ -313,9 +315,6 @@ app.post("/generate", async (req, res) => {
             const isRainy = weather.condition.toLowerCase().includes('rain') || 
                             weather.condition.toLowerCase().includes('storm');
             const isSnowy = weather.condition.toLowerCase().includes('snow');
-            const isCold = weather.minTemp < 50;
-            const isHot = weather.maxTemp > 75;
-            
             const topsList = categorized.tops.map(c => 
                 `${c.name} (${c.subCategory}, ${c.size}, ${c.color || 'unspecified color'}, ${c.fit || 'regular fit'})`
             ).join(", ");
@@ -336,7 +335,7 @@ app.post("/generate", async (req, res) => {
                 `${c.name} (${c.subCategory}, ${c.size || 'one size'}, ${c.color || 'unspecified color'})`
             ).join(", ");
 
-            
+            //prompt to feed the ai, have it return the exact names of the objects so we can fetch its info and display to user
             return `Create a complete outfit for ${weather.date} with weather: ${weather.condition} (${weather.minTemp}°F-${weather.maxTemp}°F).
 
 AVAILABLE CLOTHING:
@@ -372,6 +371,7 @@ NO BOLD SO DONT GIVE ME THE ** BS I DONT WANNA SEE IT
             prompts.map(prompt => getDeepSeekResponse(prompt))
         );
 
+        //scoring to see which oine to choose per cateogry highest one wioll be chosen
         const outfits = aiResponses.map((response, index) => {
             try {
                 const outfitMatch = response.match(/Outfit:\s*(.*?)(?:\r?\n|$)/);
@@ -439,6 +439,7 @@ NO BOLD SO DONT GIVE ME THE ** BS I DONT WANNA SEE IT
         res.status(500).json({ success: false, message: "serverside error" });
     }
 });
+//custom generation option only change is no weather anymore (location based), still input temp etc
 app.post("/custom-generate", async (req, res) => {
     try {
         if (!req.user) return res.json({ success: false, message: "unauthorized" });
@@ -556,7 +557,7 @@ NO BOLD SO DONT GIVE ME THE ** BS I DONT WANNA SEE IT
         return res.status(500).json({ success: false, message: "Server error" });
     }
 });
-
+//save clothes to calendar to view later
 app.post("/save-to-calendar", async (req, res) => {
     try {
         if (!req.user) return res.status(401).json({ success: false, message: "Login required" });
